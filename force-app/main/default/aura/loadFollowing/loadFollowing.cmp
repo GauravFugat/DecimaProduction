@@ -1,0 +1,164 @@
+<aura:component implements="lightning:availableForFlowScreens,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
+                access="global" 
+                controller="salesRenewal" >
+    
+    <aura:attribute name="selectedContacts" type="list" />
+    <aura:attribute name="spinner" type="boolean" default = "true"/> 
+    <aura:attribute name="existingContract" type="sObject" default="{}"/>
+    <aura:attribute name="brokerId" type="String" />
+    <aura:attribute name="State" type="String" />
+    <aura:attribute name="CustomerId" type="string"/>
+    <aura:attribute name="contactId" type="string"/>
+    <aura:attribute name="recordId" type="string"/>
+    <aura:attribute name="selectedBrokerContact" type="sObject" default="{}"/>
+    <aura:attribute name="productId" type="String" />
+    <aura:attribute name="selectedSaleType" type="String" default="Load Following"/>
+    <aura:attribute name="BrokerMargin" type="currency" />
+    <aura:attribute name="PricingListToPass" type="sObject" default="{}" />
+    <aura:attribute name="showScreen" type="boolean" default="false"/>
+    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!--Changes Made by suhas for SU-842 -->
+    <aura:attribute name="salesRenew" type="boolean" default="false"/>
+    <aura:attribute name="BillTypeSalesRenew" type="list" default="['UCB']" />
+    <!--Changes Made by suhas for SU-931 -->
+    <aura:attribute name="loadFollowingValue" type="list" default="['None']" />
+    <aura:attribute name="selectedLoadFollowing" type="String"/>
+    <aura:attribute name="selectedIndexContract" type="Object" />
+    <aura:attribute name="selectedIndexOpportunity" type="Object" /> 
+    <aura:attribute name="disableNext" type="boolean" default="true"/>
+    <aura:attribute name="accountIdtoPass" type="String"/>
+    <aura:attribute name="AnnualVolumekWh" type="Decimal" />
+    <aura:attribute name="LoadFollowingPercent" type="Integer"/>
+    
+    
+    
+    <!-- <aura:registerEvent name="oSelectedRecordEvent" type="c:selectedsObjectRecordEvent"/> -->
+    
+    
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-modal__container{
+        max-width: 80rem !important;
+        width:40% !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        height:unset !important;
+        max-height:unset !important;
+        }
+    </aura:html>
+    
+    <aura:if isTrue = "{!!v.showScreen}">
+        <div class="slds-page-header" role="banner" style="padding-top: 15px;padding-bottom: 15px;">
+                <div class="slds-grid">
+                    <div class="slds-col slds-has-flexi-truncate">
+                        <div class="slds-media slds-no-space slds-grow">
+                            <div class="slds-media__body slds-text-align_center" style=" font-size:14px; padding-top: 3px">
+                                <b>Add Load Following</b>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        
+        <div style="background-color:white;" class="slds-card__body slds-card__body_inner">
+            <div class="slds-form_horizontal  slds-grid slds-wrap">
+                <div class="slds-col slds-size_2-of-2" style="min-height:230px">
+                    
+                    <lightning:select required="true" class="slds-m-right--small1" label="Load Following %" aura:id="selectLoadFollowing" onchange="{!c.handleLoadFollowingPicklistChange}">
+                        <option value="{!val}"  selected="{!val==v.selectedLoadFollowing}">None</option>
+                        <aura:iteration items="{!v.loadFollowingValue}" var="val">
+                            <option value="{!val}" selected="{!val==v.selectedLoadFollowing}"> {!val}</option>
+                        </aura:iteration>
+                    </lightning:select>	
+                    
+                    <div  class="slds-m-right--small1" style="display:inline">
+                        <span style="color:red">*</span>Index Opportunity
+                        <c:customLookup showErrorborder ="yes" aura:id="IndexOppLookup" objectAPIName="Opportunity"  NoContactRoleerror="" IconName="standard:opportunity" selectedRecord="{!v.selectedIndexOpportunity}" 
+                                        label="Index Opportunity" placeholder="Search Opportunity.." showButton="false" showButtonAccount="true" />
+                    </div>
+                    
+                    <div  class="slds-m-right--small1" style="display:inline">
+                        <span style="color:red">*</span>Index Contract
+                        <c:customLookup showErrorborder ="yes" aura:id="IndexContractLookup" objectAPIName="Contract" NoContactRoleerror="" IconName="standard:contract" selectedRecord="{!v.selectedIndexContract}" 
+                                        label="Index Contract" placeholder="Search Contract.." showButton="false" showButtonAccount="true" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="slds-card__footer" style="padding-bottom: 57px !important;background-color:#F8F8F8;padding-top: 0px;margin-top: -49px;">
+            <span style="display:inline-block; margin-top:17px;float:left">               
+                <lightning:button variant="brand" 
+                                  label="Cancel"
+                                  title="Cancel"
+                                  onclick="{! c.closeWarningModel }"/>
+            </span>
+            <span style="display:inline-block;margin-right:10px; margin-top:17px;float:right">
+                <lightning:button variant="brand" 
+                                  label="Next"
+                                  title="Next"
+                                  disabled="{!v.disableNext}"
+                                  onclick="{! c.goToCreateOpportunity }"/>
+            </span>
+            
+        </footer>         
+    </aura:if>
+    <aura:if isTrue = "{!v.showScreen}">
+        <!--<span style="display:inline-block;margin-right:10px; margin-top:17px;float:left">
+            <lightning:button label="Previous"
+                              variant="brand"
+                              onclick="{!c.handlePrevious }"
+                              name="previous"/>
+        </span>
+-->
+        
+        
+        <c:Create_Opportunity_Screen2 selectedContacts = "{!v.selectedContacts}" 
+                                      brokerId="{!v.brokerId}" 
+                                      reloadPage="false" 
+                                      State= "{!v.State}"
+                                      recordId="{!v.CustomerId}"
+                                      contractId="{!v.recordId}"
+                                      productId="{!v.productId}"
+                                      selectedSaleType = "{!v.selectedSaleType}"
+                                      BrokerMargin="{!v.BrokerMargin}"
+                                      PricingListToPass = "{!v.PricingListToPass}"
+                                      selectedBrokerContact="{!v.selectedBrokerContact}"
+                                      salesRenew = "{!v.salesRenew}"
+                                      BillTypeSalesRenew = "{!v.BillTypeSalesRenew}"
+                                      loadFollowingValue = "{!v.loadFollowingValue}"
+                                      selectedLoadFollowing = "{!v.selectedLoadFollowing}"
+                                      selectedIndexContract= "{!v.selectedIndexContract}"
+                                      selectedIndexOpportunity = "{!v.selectedIndexOpportunity}"
+                                      loadFollowing = "true"
+                                      dontCallExperianBusSearchFetch = "false"
+                                      accountIdtoPass ="{!v.accountIdtoPass}"
+                                      contractRecID= "{!v.recordId}"
+                                      LoadFollwDateValidMsg = "Invalid Date"
+                                      AnnualVolumekWh = "{!v.AnnualVolumekWh}"
+                                      LoadFollowingPercent ="{!v.LoadFollowingPercent}"
+                                      IsDisabledNext = 'true'
+                                      isItLoadFollowing = 'Yes'
+                                      fromLodFollowing = 'true'
+                                      />
+        <div>
+            <aura:if isTrue="{!v.spinner}">
+                <div aura:id="spinnerId" class="slds-spinner_container">
+                    <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                        <span class="slds-assistive-text">Loading...</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </aura:if>            
+        </div>
+    </aura:if>
+    
+</aura:component>

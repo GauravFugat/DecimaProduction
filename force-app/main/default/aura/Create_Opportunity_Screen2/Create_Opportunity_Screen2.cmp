@@ -1,0 +1,245 @@
+<aura:component implements="force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global" 
+                controller="Create_Opportunity">
+    <aura:attribute name="reloadPage" type="boolean" default = "false"/>
+    <aura:attribute name="showScreen3" type="boolean" default="false"/>
+    <!-- <aura:handler name="oSelectedRecordEvent" event="c:selectedsObjectRecordEvent" action="{!c.handleComponentEvent}"/>-->
+    <aura:attribute name="InvoiceBillingType" type="list" default="['Summary Billing','Single Account Billing']" />
+    <aura:attribute name="showInvoiceBillingType" type="boolean" default = "false"/> 
+    <aura:attribute name="selectedUserId" type="User" />
+    <aura:attribute name="selectedContacts" type="list" />
+    <aura:attribute name="PricingListToPass" type="sObject" default="{}" />
+    <aura:attribute name="selectedSaleType" type="String"/>
+    <aura:attribute name="contractId" type="String" />
+    <aura:attribute name="productId" type="String" />
+    <aura:attribute name="selectedBillType" type="String" />
+    <aura:attribute name="selectedProductFamily" type="String" default='Fixed' />
+    <aura:attribute name="selectedProduct" type="String" default='Fully Fixed'/>
+    <aura:attribute name="BrokerMargin" type="currency" />   
+    <aura:attribute name="ExpectedAnnualVolume" type="Integer" />   
+    <aura:attribute name="CreatePricingRequest" type="boolean" default = "true"/>
+    <aura:attribute name="CreatePricingRequest1" type="boolean" default = "false"/>
+    <aura:attribute name="ShowCreatePricingRequest" type="boolean" default = "false"/>
+    <aura:attribute name="spinner" type="boolean" default = "false"/>
+    <aura:attribute name="SaleType" type="list" default="['New']" />
+    <aura:attribute name="SwitchingType" type="list" default="['On-Cycle','Off-Cycle']" />
+    <aura:attribute name="BillType" type="list" default="['POR','Dual']" />
+    <aura:attribute name="ProductFamily" type="list" />
+    <aura:attribute name="Product" type="list" />
+    <aura:attribute name="State" type="String" />
+    <aura:registerEvent name="cmpEvent" type="c:ComponentEvent"/>
+    <aura:attribute name="CustomerAcc" type="Object" />
+    <aura:handler name="change" value="{!v.selectedBrokerAccount}" action="{!c.editAccount}"/>
+    <aura:attribute name="selectedAccountId" type="String" />
+    <aura:attribute name="showErrorborder" type="String" default = "yes"/>
+    <aura:registerEvent name="oSelectedRecordEvent" type="c:selectedsObjectRecordEvent"/>
+    <aura:attribute name="selectedBrokerContact" type="sObject" default="{}"/>
+    <aura:attribute name="BrokerType" type="string" default="Broker"/>
+    <aura:attribute name="SelectedCPM" type="sObject" />
+    <aura:handler name="change" value="{!v.SelectedCPM}" action="{!c.editCPMUser}"/>
+    <aura:attribute name="selectedBrokerAccount" type="sObject" default="" />
+    <aura:attribute name="BrokerAcc" type="Object" />
+    <aura:attribute name="brokerId" type="Object" />
+    <aura:attribute name="recordId" type="string"/>
+    <aura:attribute name="OppId" type="string"/>
+    <aura:attribute name="duedateValidation" type="boolean" default = "true"/>
+    <aura:attribute name="BlendAndExtend" type="boolean" default = "false"/>
+    <aura:attribute name="NameSuffix" type="string"/>
+    <aura:attribute name="IsDisabledNext" type="boolean" default = "false"/>
+    <aura:attribute name="IsDisabledNextLookup" type="boolean" default = "false"/>
+    
+    <!--Below Changes Made by suhas for SU-842 -->
+    <aura:attribute name="salesRenew" type="boolean" default="false"/>
+    <aura:attribute name="BillTypeSalesRenew" type="list" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="loadErrorExpectedVolume" type="String"/>
+    
+    <!-- Below addtribute added by suhas -->
+    <aura:attribute name="selectedLookUpRecords" type="sObject[]" default="[]"/>
+    <aura:handler name="handleNextEvent" event="c:reUsableMultiSelectLookupEvent" action="{!c.handleComponentEvent}"/>
+    <!--Below attribute added by suhas for SU 931-->
+    <aura:attribute name="loadFollowingValue" type="list" default="['None']" />
+    <aura:attribute name="selectedLoadFollowing" type="String"/>
+    <aura:attribute name="selectedIndexContract" type="String" />
+    <aura:attribute name="selectedIndexOpportunity" type="String" /> 
+    <aura:attribute name="loadFollowing" type="boolean" default="false"/>
+    <aura:attribute name="isItLoadFollowing" type="string" default = "No"/>
+    <aura:attribute name="accountIdtoPass" type="String" />
+    <aura:attribute name="contractRecID" type="string"/>
+    <aura:attribute name="AnnualVolumekWh" type="Decimal" />
+    <aura:attribute name="LoadFollowingPercent" type="Integer"/>
+    <aura:attribute name="LoadFollwDateValidMsg" type="string" default=""/>
+    <aura:attribute name="fromLodFollowing" type="boolean" default="false"/>
+    
+    
+    <aura:attribute name="dontCallExperianBusSearchFetch" type="boolean" default="true"/>
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-modal__container{
+        max-width: 80rem !important;
+        width:55% !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y: hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+    </aura:html>
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.brokerId}" 
+                      targetFields="{!v.BrokerAcc}"
+                      targetError="{!v.recordLoadError}"
+                      recordUpdated="{!c.doInit}"
+                      fields="Id,Name"
+                      />
+    <aura:if isTrue ="{!v.ShowCreatePricingRequest == false}">
+        <article class="slds-card" style="margin-top:30px;">
+            <div class="slds-page-header" role="banner" style="margin-top: -30px;padding-top: 15px;padding-bottom: 15px;">
+                <div class="slds-grid">
+                    <div class="slds-col slds-has-flexi-truncate">
+                        <div class="slds-media slds-no-space slds-grow">
+                            <div class="slds-media__figure">
+                                <lightning:icon iconName="standard:opportunity" size="small"/>
+                            </div>
+                            <div class="slds-media__body" style=" font-size:14px; padding-top: 3px">
+                                <b>Create New Opportunity</b>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div style="background-color:white;" class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-2" style="min-height:350px">
+                        <span>
+                            <!-- lightning:button to get selected rows data -->
+                            <aura:if isTrue="{!v.spinner}">
+                                <div aura:id="spinnerId" class="slds-spinner_container">
+                                    <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                                        <span class="slds-assistive-text">Loading...</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </aura:if>
+                            
+                            <div>       
+                                <b>Opportunity Detail</b></div>
+                            <div style="margin-top:15px;"></div>
+                            <lightning:select required="true" class="slds-m-right--small1" label="Sale Type" aura:id="selectSaleType" disabled="true">
+                                <aura:iteration items="{!v.SaleType}" var="val">
+                                    <option value="{!val}" selected="{!val==v.selectedSaleType}"> {!val}</option>
+                                </aura:iteration>
+                            </lightning:select>	
+                            <lightning:select required="true" class="slds-m-right--small1" label="Switching Type" aura:id="selectSwitchingType">
+                                <aura:iteration items="{!v.SwitchingType}" var="val">
+                                    <option value="{!val}" > {!val}</option>
+                                </aura:iteration>
+                            </lightning:select>	
+                            <!--style="margin-top:5px;max-width:416px" -->
+                            <lightning:input class="slds-m-right--small1" type="text" aura:id="NameSuffix" label="Name Suffix" value="{!v.NameSuffix}" />
+                            <!-- <lightning:input style="margin-top:5px;max-width:416px" type="number" aura:id="BrokerMargin" label="Broker Margin" formatter="currency" step="0.00001" value="{!v.BrokerMargin}" /> -->
+                            <lightning:input class="slds-m-right--small1" type="number" aura:id="ExpectedAnnualVolume" label="Expected Annual Volume" required="true" value="{!v.ExpectedAnnualVolume}" onchange = "{!c.onChange}"/>
+                            <!-- formatter="currency" step="0.00001"  style="margin-top:5px;max-width:416px" -->
+                            <div style="margin-top:7px;">
+                                CPM User
+                            </div>
+                            <div class="slds-m-right--small1" style="height:50px !important;margin-top:15px;" >
+                                <!--CPM User-->
+                                <c:customLookup showErrorborder ="No" objectAPIName="User" contactRole="" ShowMsg="false" selectedRecord="{!v.SelectedCPM}" showButton="false" NoContactRoleerror=" " placeholder="search users"/>
+                            </div> 
+                           
+                            <lightning:input style="margin-top:23px;margin-bottom:60px;" aura:id="CPR" type="checkbox" label="Create Pricing Request?" name="input2" checked="{!v.CreatePricingRequest}" onchange="{!c.CPRcheck}"/>
+                        </span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2" style="min-height:350px">
+                        <span>
+                            <b>Broker</b>
+                            <div style="margin-top:20px;"></div>
+                            <!-- changed below moargin margin-top:13px  to 33 px -->
+                            <div style="height:50px !important;margin-top:33px;max-width:416px;" class="slds-m-right--small1">
+                                <span style="color:red">*</span>Broker Account
+                                <c:customLookup showErrorborder ="yes" aura:id="BrokerLookup" objectAPIName="Account" BrokerType="{!v.BrokerType}" NoContactRoleerror="" IconName="standard:account" selectedRecord="{!v.selectedBrokerAccount}" 
+                                                label="Account Name" placeholder="Search Account.." showButton="false" showButtonAccount="true" />
+                            </div>
+                            <!-- changed below margin-top:1px to -12px -->
+                            <div style="height:50px !important;margin-top:-12px;max-width:416px;" class="slds-m-right--small1">
+                                <span style="color:red">*</span>Broker Contact
+                                <!-- commented by suhas -->
+                                <!-- <c:customLookup isInit = "true" showErrorborder ="yes" objectAPIName="Contact" contactRole="Broker" NoContactRoleerror="" accId="{!v.selectedBrokerAccount.Id}" IconName="standard:contact" selectedRecord="{!v.selectedBrokerContact}"
+                                            label="Contact" showButton="true"/>
+                            <br/> -->
+                                <c:reUsableMultiSelectLookup 
+                                                             objectAPIName="Contact"
+                                                             IconName="standard:contact"
+                                                             ParentObjectFieldName="AccountId"
+                                                             ParentObjectId="{!v.selectedBrokerAccount.Id}"
+                                                             lstSelectedRecords="{!v.selectedLookUpRecords}"
+                                                             />
+                                
+                                <!-- To comment for demo purpose -->
+                                
+                                
+                            </div>
+                            
+                            <div  class="slds-m-right-small1">
+                                
+                                <lightning:input style="margin-top:59px;max-width:416px" type="number" aura:id="BrokerMargin" label="Broker Margin" formatter="currency" step="0.00001" value="{!v.BrokerMargin}" />
+                                
+                            </div>
+                            
+                            <!--style="height:50px !important;margin-top:10px;max-width:416px;" -->
+                            <!-- broker margin moved to top from here -->
+                            <!-- <div  class="slds-m-right-small1">
+                                <lightning:input style="margin-top:2px;max-width:416px" type="number" aura:id="BrokerMargin" label="Broker Margin" formatter="currency" step="0.00001" value="{!v.BrokerMargin}" />
+                            </div> -->
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+         <footer class="slds-card__footer" style="padding-bottom: 57px !important;background-color:#F8F8F8;padding-top: 0px;margin-top: -49px;">
+                
+                <span style="display:inline-block; margin-top:17px;float:right">
+                    <lightning:button label="Next"
+                                      variant="brand"
+                                      onclick="{!c.CreatePricingRequest }"
+                                      name="next"
+                                      disabled="{!or(v.IsDisabledNext == false,v.IsDisabledNextLookup == false)}"/>
+                    
+                </span>
+                <aura:if isTrue="{! empty(v.productId)}">
+                    <span style="display:inline-block;margin-right:10px; margin-top:17px;float:left">
+                        <lightning:button label="Previous"
+                                          variant="brand"
+                                          onclick="{!c.handlePrevious }"
+                                          name="previous"/>
+                    </span>
+                </aura:if>
+            </footer>
+           
+        </article>
+        
+    </aura:if>
+    
+    <aura:if isTrue ="{!v.ShowCreatePricingRequest}">
+        
+        <!--c:Create_PricingRequest accIdfromSC2 = "{!v.recordId}" fromOppScreen2 = "{!v.ShowCreatePricingRequest}" recordId="{!v.OppId}" NewOppId="{!v.OppId}"/-->
+        <c:Create_PricingRequest LoadFollwDateValidMsg = "Invalid Date" contractRecID="{!v.contractRecID}" 
+                                 isItLoadFollowing="{!v.isItLoadFollowing}"
+                                 accountIdtoPass1="{!v.accountIdtoPass}"  selectedSaleType = "{!v.selectedSaleType}" 
+                                 State= "{!v.State}" PricingListToPass = "{!v.PricingListToPass}" productId="{!v.productId}"
+                                 contractId = "{!v.contractId}" accIdfromSC2 = "{!v.recordId}" fromOppScreen2 = "{!v.ShowCreatePricingRequest}" 
+                                 recordId="{!v.OppId}" NewOppId="{!v.OppId}" salesRenew = "{!v.salesRenew}" BillTypeSalesRenew = "{!v.BillTypeSalesRenew}" 
+                                 loadFollowing1="{!v.loadFollowing}" selectedLoadFollowing="{!v.selectedLoadFollowing}"
+                                 fromLodFollowing="{!v.fromLodFollowing}"/>
+    </aura:if>
+</aura:component>

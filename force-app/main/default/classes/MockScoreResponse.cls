@@ -1,0 +1,14 @@
+global class MockScoreResponse implements HttpCalloutMock {
+    
+    global String res = '{"requestId":"rrt-0179c636db13027e5-c-ea-19264-3751308-6","success":true,"comments":null,"results":{"businessHeader":{"bin":"711655002","businessName":"BASF CATALYSTS LLC","address":{"street":"101 WOOD AVE S","city":"ISELIN","state":"NJ","zip":"08830","zipExtension":"2749"},"phone":"+19732456000","taxId":"000952801","websiteUrl":"engelhard.com","legalBusinessName":null,"dbaNames":["BASF CORP"],"customerDisputeIndicator":false},"commercialScore":{"modelCode":"000224","modelTitle":"INTELLISCORE PLUS V2","customModelCode":"02","score":54,"percentileRanking":53,"recommendedCreditLimitAmount":2227700,"riskClass":{"code":2,"definition":"LOW TO MEDIUM RISK"}},"commercialScoreFactors":[{"code":"033","definition":"NUMBER OF COMMERCIAL ACCOUNTS THAT ARE CURRENT"},{"code":"066","definition":"PERCENT OF DELINQUENT COMMERCIAL ACCOUNTS"},{"code":"025","definition":"BALANCE OF RECENTLY DELIINQUENT COMMERCIAL ACCOUNTS"},{"code":"067","definition":"PERCENT OF SERIOUSLY DELINQUENT COMMERCIAL ACCOUNTS"}],"commercialScoreTrends":[{"quarter":"JAN-MAR","score":57},{"quarter":"OCT-DEC","score":51},{"quarter":"JUL-SEP","score":45},{"quarter":"APR-JUN","score":48}],"fsrScore":{"modelCode":"000223","modelTitle":"FINANCIAL STABILITY RISK","score":66,"percentileRanking":65,"recommendedCreditLimitAmount":null,"riskClass":{"code":1,"definition":"LOW RISK"}},"fsrScoreFactors":[{"code":"004","definition":"RISK ASSOCIATED WITH THE COMPANYS INDUSTRY SECTOR"},{"code":"016","definition":"PERCENT OF COMMERCIAL ACCOUNTS DELINQUENT"},{"code":"011","definition":"PAST COMMERCIAL DEROGATORY BALANCE"},{"code":"005","definition":"NUMBER OF COMMERCIAL DEROGATORY PUBLIC RECORDS"}],"fsrScoreTrends":[{"quarter":"JAN-MAR","score":69},{"quarter":"OCT-DEC","score":34},{"quarter":"JUL-SEP","score":33},{"quarter":"APR-JUN","score":34}],"listOfSimilars":[{"bin":"711655002","reliabilityCode":100,"businessName":"BASF CATALYSTS LLC","phone":"+19732456000","address":{"street":"101 WOOD AVE S","city":"ISELIN","state":"NJ","zip":"08830","zipExtension":"2749"},"numberOfTradelines":71,"financialStatementIndicator":false,"keyFactsIndicator":true,"inquiryIndicator":false,"bankDataIndicator":false,"governmentDataIndicator":false,"executiveSummaryIndicator":true,"uccIndicator":true,"matchingNameAndAddress":null,"businessGeocode":{"latitudeLongitudeLevel":"Roof Top Level","latitude":40.563754,"longitude":-74.328738,"msaCode":"5015","censusBlkGrpCode":"","censusTractCode":"002603","cottageIndicator":false,"congressionalDistrictCode":"06","dateLastReported":"2018-01-31"}}]}}';
+    
+    // Implement this interface method
+    global HTTPResponse respond(HTTPRequest req) {
+       
+        HttpResponse res1 = new HttpResponse();
+        res1.setHeader('Content-Type', 'application/json');
+        res1.setBody(res);
+        res1.setStatusCode(200);
+        return res1;
+    }
+}

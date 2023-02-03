@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Component Event Example">
+    <aura:attribute name="selectedValues" type="List" />
+    <aura:attribute name="selectedColumn" type="String" />
+</aura:event>

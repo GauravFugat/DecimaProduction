@@ -1,0 +1,79 @@
+.THIS .hidden-table:hover {
+     background-color: white !important;
+ }
+
+.THIS .abc:hover svg{
+    fill:#8B0000;
+    cursor:pointer;
+}
+
+.THIS .d-flex.align-item-center {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin-top: 20px;
+}
+.THIS .slt-columns {
+  margin-right:15px;
+}
+.THIS .table-header {
+  padding: 0 24px;
+}
+.THIS .table-header .input-label {
+  margin-top: 24px;
+}
+.THIS .slds-col-left .input-label, .THIS .slds-col-left .input-field {
+  display: inline-block;
+}
+.THIS .slds-col-left {
+}
+.THIS .slds-col-left {
+  flex: 1 1 auto;
+  display: flex;
+}
+.THIS .inputs-field {
+  width: 200px;
+  margin: 0 10px 0 10px;
+}
+.THIS .input-space {
+  width:50px
+}
+.THIS .tbl-listing-outer {
+   width:auto;
+  padding:20px 15px 0;
+}
+.THIS .tbl-listing {
+  overflow: auto; 
+  width:100%;
+  border:solid 1px #f1f1f1;
+  border-top:0;
+}
+.THIS .slds-table_cell-buffer tr > th:first-child, .THIS .slds-table_cell-buffer tr > td:first-child {
+  padding-left: 8px;
+}
+.THIS .slds-card__header.slds-grid {
+  display: none;
+}
+.THIS .slds-card__body {
+  margin-top: 0;
+}
+@media (min-width:320px) {
+.THIS .tbl-pagination .submit-btn {
+  margin-left:15px;
+  min-width:140px;
+}
+}
+@media (min-width:1100px) {
+.THIS .tbl-pagination {
+  position: relative;
+}
+.THIS .tbl-pagination .submit-btn {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+}
+}
+
+.THIS .colRed{
+    background-color: red;
+}

@@ -1,0 +1,442 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" 
+                controller="PrepareForContractAura">
+   	<aura:attribute name="fields" type="String[]" default="['Name','Phone','BillingAddress']" />
+   	<aura:attribute name="accountRecordId" type="string"/>
+    <aura:attribute name="opporRecordId" type="string"/>	    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="contactId" type="string"/>
+    <aura:attribute name="contactName" type="string"/>
+    <aura:attribute name="contactEmail" type="string"/>
+    <aura:attribute name="conExists" type="boolean" default="false"/>
+    
+    <aura:attribute name="oppCpmcredit" type="Boolean" default="false"/>
+    <aura:attribute name="taxExempt" type="Boolean" default="false"/>
+    <aura:attribute name="taxablePortion" type="Decimal" default="0.0000%"/> 
+    
+ 	<aura:attribute name="accId" type="string"/>
+    <aura:attribute name="accName" type="string"/>
+    <aura:attribute name="accPhone" type="integer"/>
+    <aura:attribute name="accBillingStreet" type="string"/>
+    <aura:attribute name="accBillingState" type="string"/>
+    <aura:attribute name="accBillingPostalCode" type="string"/>
+    <aura:attribute name="accBillingCountry" type="string"/>
+    <aura:attribute name="accBillingCity" type="string"/>
+    <aura:attribute name="editMode" type="boolean" default="false"/>
+     <aura:attribute name="editModes" type="boolean" default="true"/>
+    <aura:attribute name="viewMode" type="boolean" default="true"/>
+    <aura:attribute name="isCommTypeResidual" type="boolean" default="false"/>
+     <aura:attribute name="message" type="string" default="Email check"/>
+        <aura:attribute name="isSuccess" type="Boolean" default="false"/>
+    <aura:attribute name="msg" type="boolean" default="false"/>
+
+    
+    <!--new code added by Me-->
+    <aura:attribute name="oldAccName" type="string"/>
+    <aura:attribute name="oldAccPhone" type="string"/>
+    <aura:attribute name="oldAccContact" type="string"/>
+    <aura:attribute name="oldAccEmail" type="string"/>
+    <aura:attribute name="oldAccBillingStreet" type="string"/>
+    <aura:attribute name="oldAccBillingState" type="string"/>
+    <aura:attribute name="oldAccBillingPostalCode" type="string"/>
+    <aura:attribute name="oldAccBillingCountry" type="string"/>
+    <aura:attribute name="oldAccBillingCity" type="string"/>
+    <aura:attribute name="oldOppCommTypeResidual" type="boolean" default="false"/>    
+    <aura:attribute name="oldOppSwitchingType" type="string" default="On-Cycle"/>
+    <aura:attribute name="oldOppCpmcredit" type="Boolean" default="false"/>
+    <aura:attribute name="oldSelectedValue" type="String" default="Residual"  /> <!--default="Residual"-->
+    
+    
+    
+    
+    
+    
+    
+    
+    <aura:attribute name="opportunityRecordId" type="string" default="006f000000NpIEyAAN"/>
+	<aura:attribute name="opportunityDiscount" type="string"/>
+    <aura:attribute name="billType" type="string"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:attribute name="options" type="List" />
+    <aura:attribute name="switchOption" type="List" />
+    <aura:attribute name="selectedValue" type="String" default="Residual" />  <!--default="Residual"-->
+
+    <aura:attribute name="selecteValue" type="String"/>
+    
+    <aura:attribute name="broker" type="string" default="Residual"  /> <!--default="Residual"-->
+    <aura:attribute name="oppOwner" type="string"/>
+    <aura:attribute name="oppType" type="string"/>
+    <aura:attribute name="oppCommissionDis" type="string" default="5%"/>
+    <aura:attribute name="oppCommissionType" type="string"/>
+
+    <aura:attribute name="oppSwitchingType" type="string" default="On-Cycle"/>
+    
+    <aura:attribute name="recordId" type="string"/>
+    <aura:attribute name="recordResponse" type="object"/>
+    <aura:attribute name="spinner" type="boolean" default = "true"/> 
+    <aura:attribute name="isDisableChkbox" type="boolean" default = "true"/> 
+    <aura:attribute name="isShowTaxablePortion" type="boolean" default = "false"/> 
+    <aura:attribute name="isOppCpmCredit" type="boolean" default="false"/>
+    
+    <aura:registerEvent name="buttonDisableEvent" type="c:nextButtonDisableEvent"/>
+	
+    <aura:if isTrue="{v.msg == true}">
+                                        {v.message}
+                                     </aura:if>
+    <lightning:card class="slds-p-around-small">
+        
+        <aura:if isTrue="{!v.spinner}">
+            <div aura:id="spinnerId" class="slds-spinner_container">
+                <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                    <span class="slds-assistive-text">Loading...</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        	
+            <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12 div_section1 div-section-edit" aura:id="sec_1">
+                <aura:if isTrue="{!v.editMode}">
+                   <div class="slds-form_horizontal slds-form slds-grid slds-wrap">
+                        <lightning:input aura:id="accNameId" class="slds-size_1-of-1" type="text" value="{!v.accName}" Name="Account Name" label ="Account Name"/>
+                      
+                    <lightning:input aura:id="accPhoneId" class="slds-size_1-of-1" 
+                                     type="text" value="{!v.accPhone}" 
+                                     messageWhenBadInput='Phone number should be 11 chars max' 
+                                     pattern="^[0-9_ ]*$" Name="Phone" 
+                                     label ="Phone" onchange="{! c.onChange1 }"  maxlength="10" minlength="10"/> 
+                        <!--  <lightning:input aura:id="accPhoneId" class="slds-size_1-of-1" type="number" value="{!v.accPhone}" Name="Phone" label ="Phone"/> -->
+                       <!-- <span onkeypress="{!c.acceptOnlynumber}">
+                        <lightning:input aura:id="accPhoneId" class="slds-size_1-of-1"  name="number" label="Number" value="12345" />
+                       </span> -->                    
+                        
+                       	<aura:if isTrue="{!v.conExists == true}">
+                            <lightning:input aura:id="contactnameId" class="slds-size_1-of-1" type="text" name="contactname" label="Contact Name"  value="{!v.contactName}" />
+                            <lightning:input aura:id="contactEmailId" class="slds-size_1-of-1" 
+                                             type="Email" 
+                                             name="contactEmail" 
+                                             label="Contact Email" 
+                                             placeholder="abc@xyz.com"
+                                             
+                                             message-when-pattern-mismatch ="Email should be in correct format"
+                                             value="{!v.contactEmail}"
+                                              onchange="{! c.onChange2 }"
+                                             onclick="{c.validateEmail}" />
+                           
+                        </aura:if>
+                       	<aura:if isTrue="{!v.conExists == false}">
+                           <div class="slds-form-element editBottomBdr">
+                               <label class="slds-form-element__label label_text" for="text-input-id-6">Contact Name</label>
+                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                                   <!--<lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon" onclick="{! c.handleEdit }" alternativeText="Edit" />-->
+                                   <!--<span class="input-group-btn" title="{!v.contactName}">{!v.contactName}</span>-->
+                                   <lightning:icon size="x-small" iconName="utility:warning" variant="warning"/><span class="slds-text-color_warning" style="padding-top:3px;">&nbsp;&nbsp;No primary contact</span>
+                                   
+                               </div>
+                           </div>
+                           <div class="slds-form-element editBottomBdr">
+                               <label class="slds-form-element__label label_text" for="text-input-id-6">Contact Email</label>
+                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right contactemail">
+                                   <!--<lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon" onclick="{! c.handleEdit }" alternativeText="Edit" />-->
+                                   <!--<span class="input-group-btn" title="{!v.contactEmail}">{!v.contactEmail}</span>-->
+    								<lightning:icon size="x-small" iconName="utility:warning" variant="warning"/><span class="slds-text-color_warning" style="padding-top:3px;">&nbsp;&nbsp;No primary contact</span>
+                                   
+                               </div>
+                           </div>
+                        </aura:if>
+                       	<label lightning-input_input="" for="accTaxChkbox" class="slds-checkbox__label chkboxLableInput"><span lightning-input_input="" class="slds-form-element__label">Tax Exempt</span></label>
+                       	<lightning:input aura:id="accTaxChkbox" class="slds-size_1-of-1 margin_top_chkinput" type="checkbox" name="Tax_Exempt_chkbox" checked="{!v.taxExempt}" onchange="{! c.handleCheckbox }" disabled="true" />
+                        
+						
+						<aura:if isTrue="{!v.taxExempt == true}">
+                       <div class="TaxablePortion-div">
+                           <label lightning-input_input="" for="accTaxable" class="slds-checkbox__label taxableInput">
+                               <span lightning-input_input="" class="slds-form-element__label">Taxable Portion</span>
+                           </label>                       
+                      <aura:if isTrue="{!v.taxablePortion == null || !v.taxablePortion == ''}">
+                                       <lightning:formattedNumber format-style="decimal" class="TaxablePortion TaxablePortion-value" aura:id = "totalPrice" value="{!v.taxablePortion}" minimumFractionDigits="4" formatter="percent-fixed" step="01.01"/>0.0000
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.taxablePortion != null || !v.taxablePortion != ''}">
+                                        <lightning:formattedNumber format-style="decimal" class="TaxablePortion TaxablePortion-value" aura:id = "totalPrice" value="{!v.taxablePortion}" minimumFractionDigits="4" formatter="percent-fixed" step="01.01"/>%
+                                    </aura:if>
+                           
+                            
+                       </div>
+                       </aura:if>
+                       
+                       <lightning:inputAddress
+                                                aura:id="myaddress"
+                                                addressLabel="Billing Address"
+                                                streetLabel="Street"
+                                                cityLabel="City"
+                                                countryLabel="Country"
+                                                provinceLabel="State/Province"
+                                                postalCodeLabel="Zip/Postal Code"
+                                                street="{!v.accBillingStreet}"
+                                                city="{!v.accBillingCity}"
+                                                country="{!v.accBillingCountry}"
+                                                province="{!v.accBillingState}"
+                                                postalCode="{!v.accBillingPostalCode}"
+                                                class="billing_edit"
+                                                />
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.viewMode}">
+           			<div class="slds-form_horizontal slds-form slds-grid slds-wrap">
+                       <div class="slds-form-element editBottomBdr">
+                           <label class="slds-form-element__label label_text" for="text-input-id-6">Account Name</label>
+                           <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                               <lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon" onclick="{! c.handleEdit }" alternativeText="Edit" />
+                               <span class="input-group-btn" title="{!v.accName}">{!v.accName}</span>
+                               
+                           </div>
+                       </div>
+                       <div class="slds-form-element editBottomBdr">
+                           <label class="slds-form-element__label label_text" for="text-input-id-6">Phone</label>
+                           <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                               <lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon" onclick="{! c.handleEdit }" alternativeText="Edit" />
+                               {!v.accPhone}
+                           </div>
+                       </div>
+                       
+                       <aura:if isTrue="{!v.conExists == true}">
+                           <div class="slds-form-element editBottomBdr">
+                               <label class="slds-form-element__label label_text" for="text-input-id-6">Contact Name</label>
+                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                                   <lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon" onclick="{! c.handleEdit }" alternativeText="Edit" />
+                                   <span class="input-group-btn" title="{!v.contactName}">{!v.contactName}</span>
+                               </div>
+                           </div>
+                           <div class="slds-form-element editBottomBdr">
+                               <label class="slds-form-element__label label_text" for="text-input-id-6">Contact Email</label>
+                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right contactemail">
+                                   <lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon" onclick="{! c.handleEdit }" alternativeText="Edit" />
+                                    <span class="input-group-btn" title="{!v.contactEmail}">{!v.contactEmail}</span>
+    
+                               </div>
+                           </div>
+                        </aura:if>
+                                                
+                        <aura:if isTrue="{!v.conExists == false}">
+                           <div class="slds-form-element editBottomBdr">
+                               <label class="slds-form-element__label label_text" for="text-input-id-6">Contact Name</label>
+                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                                   <!--<lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon" onclick="{! c.handleEdit }" alternativeText="Edit" />-->
+                                   <!--<span class="input-group-btn" title="{!v.contactName}">{!v.contactName}</span>-->
+                                   <lightning:icon size="x-small" iconName="utility:warning" variant="warning"/><span class="slds-text-color_warning" style="padding-top:3px;">&nbsp;&nbsp;No primary contact</span>
+                                   
+                               </div>
+                           </div>
+                           <div class="slds-form-element editBottomBdr">
+                               <label class="slds-form-element__label label_text" for="text-input-id-6">Contact Email</label>
+                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right contactemail">
+                                   <!--<lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon" onclick="{! c.handleEdit }" alternativeText="Edit" />-->
+                                   <!--<span class="input-group-btn" title="{!v.contactEmail}">{!v.contactEmail}</span>-->
+    								<lightning:icon size="x-small" iconName="utility:warning" variant="warning"/><span class="slds-text-color_warning" style="padding-top:3px;">&nbsp;&nbsp;No primary contact</span>
+                                   
+                               </div>
+                           </div>
+                        </aura:if>
+                        
+                        <div class="slds-form-element editBottomBdr">
+                           <label class="slds-form-element__label label_text" for="text-input-id-6">Tax Exempt </label>
+                           <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                               <lightning:buttonIcon iconName="utility:read" variant="bare" class="setEditIcon" alternativeText="Edit" />
+                               <lightning:input type="checkbox" class="chkboxWithInput" name="Tax_Exempt_chkbox" checked="{!v.taxExempt}" disabled="true"/>
+                               
+                           </div>
+                       	</div> 
+                       
+                        <aura:if isTrue="{!v.taxExempt == true}">
+                            <div class="slds-form-element editBottomBdr">
+                               <label class="slds-form-element__label label_text" for="text-input-id-6">Taxable Portion</label>
+                               <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                                   
+                                <aura:if isTrue="{!v.taxablePortion == null || !v.taxablePortion == ''}">
+                                       <lightning:formattedNumber format-style="decimal" aura:id = "totalPrice" value="{!v.taxablePortion}" minimumFractionDigits="4" formatter="percent-fixed" step="01.01"/>0.0000
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.taxablePortion != null || !v.taxablePortion != ''}">
+                                        <lightning:formattedNumber format-style="decimal" aura:id = "totalPrice" value="{!v.taxablePortion}" minimumFractionDigits="4" formatter="percent-fixed" step="01.01"/>%
+                                    </aura:if>
+                                 
+								   
+                               </div>
+                           </div>
+                        </aura:if> 
+                        
+                        <div class="slds-form-element editBottomBdr">
+                           <label class="slds-form-element__label label_text" for="text-input-id-6">Billing Address</label>
+                           <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right address-read" 
+                                aura:id="addr">
+                               <lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon" onclick="{! c.handleEdit }" alternativeText="Edit" />
+                               <span>{!v.accBillingStreet},</span>  
+                               <span>{!v.accBillingCity},</span> 
+                               <span>{!v.accBillingState},</span> 
+                               <span>{!v.accBillingPostalCode},</span> 
+                               <span>{!v.accBillingCountry}</span> 
+                           </div>
+                       </div>
+                        
+                        
+                        
+                    </div>
+                </aura:if>
+            </div>
+            
+            
+            
+            
+            <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12 div_section2 div-section-edit" aura:id="sec_2">
+            	<div class="slds-form_horizontal slds-form slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_6-of-12 div_section3">
+                        <div class="slds-form-element editBottomBdr" aura:id="removeClass1">
+                            <label class="slds-form-element__label label_text" for="text-input-id-6">Broker</label>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">{!v.broker}
+                            </div>
+                        </div>
+                        <div class="slds-form-element editBottomBdr" aura:id="removeClass2">
+                            <label class="slds-form-element__label label_text" for="text-input-id-6">Owner</label>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">{!v.oppOwner}
+                            </div>
+                        </div> 
+                        <div class="slds-form-element editBottomBdr" aura:id="removeClass3">
+                            <label class="slds-form-element__label label_text" for="text-input-id-6">Opportunity Type</label>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">{!v.oppType}
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element editBottomBdr Commissiontype-input" aura:id="removeClass5">
+                            <label class="slds-form-element__label label_text Commissiontype-label" for="text-input-id-6">Commission Type</label>
+                            <aura:if isTrue="{!v.viewMode}">
+                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right ">
+                                    <lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon " onclick="{! c.handleEdit }" alternativeText="Edit" />{!v.oppCommissionType}
+                                </div>
+                            </aura:if>
+                            
+                            <aura:if isTrue="{!v.editMode}">
+                                
+                                <lightning:select class="commission-dis" name="mySelect" aura:id="mySelect" value="{!v.selectedValue}" onchange="{!c.doChagne}">
+                                   <!-- <option text="{!v.oppCommissionType}" value="{!v.oppCommissionType}"/>-->
+                                    <aura:iteration items="{!v.options}" var="item">
+                                        <option text="{!item.label}" value="{!item.value}" selected="{!item.selected}" />
+                                     </aura:iteration>
+                                </lightning:select>
+                            </aura:if>
+                        </div>
+                        
+                        
+                        <aura:if isTrue="{!v.selectedValue !='Residual'}">
+                            <div class="slds-form-element editBottomBdr" aura:id="removeClass4">
+                                <label class="slds-form-element__label label_text" for="text-input-id-6">Commission Discount</label>
+                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right ">                                 
+                                  	
+                                    <aura:if isTrue="{!v.oppCommissionDis == null || !v.oppCommissionDis == ''}">
+                                        <!--<lightning:icon size="x-small" iconName="utility:warning" variant="warning"/><span class="slds-text-color_error">  No commission discount value set for this deal</span>-->
+                                        <!--{!v.oppCommissionDis} -->
+                                        5%
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.oppCommissionDis != null}">
+                                       {!v.oppCommissionDis}% 
+                                    </aura:if> 
+                                  <!--  <lightning:formattedNumber value="{!v.oppCommissionDis}" style="percent" formatter="percent-fixed" /> -->
+                                    
+                                </div>
+                            </div>
+                        </aura:if>
+
+
+                         <div class="slds-form-element editBottomBdr" aura:id="removeClass13">
+                            <label class="slds-form-element__label label_text Switchingtype-label" for="text-input-id-6">Switching Type</label>
+                            <aura:if isTrue="{!v.viewMode}">
+                                <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right ">
+                                    <lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon " onclick="{! c.handleEdit }" alternativeText="Edit" />{!v.oppSwitchingType}
+                                </div>
+                            </aura:if>
+                            
+                            <aura:if isTrue="{!v.editMode}">
+                                <lightning:select class="commission-dis" name="SwitchingTypeName" aura:id="SwitchingTypeId" onchange="{!c.doChagneSwitchingType}" value="{!v.selecteValue}">
+                                     <aura:iteration items="{!v.switchOption}" var="item">
+                                        <option text="{!item.label}" value="{!item.value}" />
+                                     </aura:iteration>
+                                </lightning:select>
+                            </aura:if>
+                        </div>
+                        
+                        <div class="slds-form-element editBottomBdr" aura:id="removeClass12">
+                           <label class="slds-form-element__label label_text" for="text-input-id-6">CPM Credit Confirmation </label>
+                           <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                               
+                               <aura:if isTrue="{!v.viewMode}">
+                                   	<lightning:buttonIcon iconName="utility:edit" variant="bare" class="setEditIcon " onclick="{! c.handleEdit }" alternativeText="Edit" />
+                               		<lightning:input type="checkbox" class="chkboxWithInput" name="Cmp_Credit_chkbox" checked="{!v.isOppCpmCredit}" disabled="true"/>
+                               </aura:if>
+                               <aura:if isTrue="{!v.editMode}">
+                               		<lightning:input type="checkbox" class="chkboxWithInput" aura:id="Cmp_Credit_chkboxVal" name="Cmp_Credit_chkboxVal" checked="{!v.isOppCpmCredit}" onchange="{! c.changeOppCpmCredit }"/>
+                               </aura:if>
+                            </div>
+                       	</div> 
+
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_6-of-12 div_section4">
+                        
+                        <div class="slds-form-element editBottomBdr" aura:id="removeClass8">
+                            <label class="slds-form-element__label label_text" for="text-input-id-6">Contract Start Date</label>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">{!v.recordResponse.StartDate}</div>
+                        </div>
+                        <div class="slds-form-element editBottomBdr" aura:id="removeClass9">
+                            <label class="slds-form-element__label label_text" for="text-input-id-6">Term</label>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">{!v.recordResponse.TermMonths}</div>
+                        </div>
+                        <div class="slds-form-element editBottomBdr" aura:id="removeClass10">
+                            <label class="slds-form-element__label label_text" for="text-input-id-6">Contracted Price</label>
+                             <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right"><lightning:formattedNumber style="currency" aura:id = "totalPrice"  value="{!v.recordResponse.ContractedPrice}" maximumFractionDigits="5" minimumFractionDigits="5"  formatter="currency" step="0.01"/></div>
+                            
+                        </div>
+                        <div class="slds-form-element editBottomBdr" aura:id="removeClass11">
+                            <label class="slds-form-element__label label_text" for="text-input-id-6">Broker Margin</label>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                            
+                            <lightning:formattedNumber style="currency" aura:id = "totalPrice"  value="{!v.recordResponse.BrokerMargin}" maximumFractionDigits="5" minimumFractionDigits="5"  formatter="currency" step="0.01"/>
+                            
+                            </div>
+                        </div>
+						
+                        <div class="slds-form-element editBottomBdr" aura:id="removeClass6">
+                            <label class="slds-form-element__label label_text" for="text-input-id-6">Bill Type</label>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">{!v.billType}
+                            </div>
+                        </div>
+                        
+                        
+						<div class="slds-form-element editBottomBdr" aura:id="removeClass7">
+                            <label class="slds-form-element__label label_text" for="text-input-id-6">Product Name</label>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right productname">{!v.recordResponse.Product}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="clearfix"></div>
+       		<div class="slds-col slds-size_1-of-1 slds-large-size_12-of-12">
+                 <aura:if isTrue="{!v.editMode}">
+                      <lightning:spinner class="slds-hide" variant="brand" size="small" aura:id="Spinner"/>
+
+                    <center>
+                        <lightning:button variant="Neutral"
+                          class="slds-button" 
+                          label="Cancel"
+                          onclick="{!c.cancelChildComponentData}"/>
+                        
+                        
+                        <lightning:button variant="Brand"
+                          class="slds-button" 
+                          label="Save"
+                          onclick="{!c.submitData}"/>
+                    </center>
+                </aura:if>     
+                </div>
+	<!--<aura:if isTrue="{!not(empty(v.message))}">-->
+        <aura:if isTrue="{v.msg == true}">
+    {v.message}
+   </aura:if>
+    </lightning:card>    
+</aura:component>

@@ -1,0 +1,90 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
+                access="global" 
+                controller="salesRenewal" >
+    
+    <aura:attribute name="selectedContacts" type="list" />
+    <aura:attribute name="spinner" type="boolean" default = "true"/> 
+    <aura:attribute name="existingContract" type="sObject" default="{}"/>
+    <aura:attribute name="brokerId" type="String" />
+    <aura:attribute name="State" type="String" />
+    <aura:attribute name="CustomerId" type="string"/>
+    <aura:attribute name="contactId" type="string"/>
+    <aura:attribute name="recordId" type="string"/>
+    <aura:attribute name="selectedBrokerContact" type="sObject" default="{}"/>
+    <aura:attribute name="productId" type="String" />
+    <aura:attribute name="selectedSaleType" type="String" default="Renewal"/>
+    <aura:attribute name="BrokerMargin" type="currency" />
+    <aura:attribute name="PricingListToPass" type="sObject" default="{}" />
+    <aura:attribute name="showScreen" type="boolean" default="false"/>
+    <aura:attribute name="AnnualVolumekWh" type="Decimal" /> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <!--Changes Made by suhas for SU-842 -->
+    <aura:attribute name="salesRenew" type="boolean" default="false"/>
+    <aura:attribute name="BillTypeSalesRenew" type="list" default="['UCB']" />
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-modal__container{
+        max-width: 80rem !important;
+        width:40% !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        height:unset !important;
+        max-height:unset !important;
+        }
+    </aura:html>
+    
+    <aura:if isTrue = "{!v.showScreen}">
+        <c:Create_Opportunity_Screen2 selectedContacts = "{!v.selectedContacts}" 
+                                      brokerId="{!v.brokerId}" 
+                                      reloadPage="false" 
+                                      State= "{!v.State}"
+                                      recordId="{!v.CustomerId}"
+                                      contractId="{!v.recordId}"
+                                      productId="{!v.productId}"
+                                      selectedSaleType = "{!v.selectedSaleType}"
+                                      BrokerMargin="{!v.BrokerMargin}"
+                                      PricingListToPass = "{!v.PricingListToPass}"
+                                      selectedBrokerContact="{!v.selectedBrokerContact}"
+                                      salesRenew = "{!v.salesRenew}"
+                                      BillTypeSalesRenew = "{!v.BillTypeSalesRenew}"
+                                      AnnualVolumekWh = "{!v.AnnualVolumekWh}"
+                                      IsDisabledNext = 'true'/>
+        <aura:set attribute="else">
+            
+            <div class="modal-header slds-modal__header slds-size_1-of-1">
+            <h4 class="title slds-text-heading--medium">Renew Contract</h4>
+        </div>
+
+            <div style="height:120px;">
+               <aura:if isTrue="{!v.spinner}">
+                <div aura:id="spinnerId" class="slds-spinner_container">
+                    <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                        <span class="slds-assistive-text">Loading...</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </aura:if>
+     <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;<b><span style="color:#8B0000">*</span>Note: &nbsp;</b>There is already a Renewal opportunity for this contract.
+     <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Renewal opportunity: &nbsp;- </b><a href="{!'/one/one.app?#/sObject/'+ v.existingContract.Renewal_Opportunity__c + '/view'}" target="_blank">{!v.existingContract.Renewal_Opportunity__r.Name}</a>
+                
+            </div>
+            
+            <footer class="slds-modal__footer">
+                <lightning:button variant="brand" 
+                                  label="Finish"
+                                  title="Finish"
+                                  onclick="{! c.closeWarningModel }"/>
+                
+            </footer>
+            
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

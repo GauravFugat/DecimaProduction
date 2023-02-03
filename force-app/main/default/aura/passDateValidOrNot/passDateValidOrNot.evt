@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="Event template" >
+    <aura:attribute name="isDueDateValid" type="boolean"/>
+    <aura:attribute name="dueDateValidB1" type="boolean"/>
+</aura:event>

@@ -1,0 +1,90 @@
+.THIS .setEditIcon{ float: right; }
+.THIS .editBottomBdr{border-bottom: 1px solid #dddbda; min-height: 34px;}
+.THIS .div_section1{
+    margin: 0 15px 0 0 !important;
+    display: inline-block !important;
+    width: calc(33.3333333333% - 15px) !important;
+}
+.THIS .div_section2{
+    margin: 0 0 0 15px !important;
+    display: inline-block !important;
+    width: calc(66.6666666667% - 15px) !important;
+}
+
+.THIS .div_section3{
+    margin: 0 15px 0 0 !important;
+    display: inline-block !important;
+    width: calc(50.000000000% - 15px) !important;
+}
+.THIS .div_section4{
+    margin: 0 0 0 15px !important;
+    display: inline-block !important;
+    width: calc(50.000000000%  - 15px) !important;
+}
+.THIS .slds-form-element__legend{
+    font-weight: 400 !important;
+}
+
+.THIS .slds-modal__container.modal-container {
+    max-width: 90rem !important;
+    width: 90% !important;
+}
+
+/*
+.THIS .slds-form-element__help{display: none !important;}
+.THIS slds-form-element__label{
+   	padding-left: 35% !important;
+    word-break: break-all;
+}*/
+.THIS .slds-form-element__label.label_text{
+    max-width: calc(51% - var(--lwc-squareIconUtilityMedium,1.25rem)) !important;
+    flex-basis: calc(51% - var(--lwc-squareIconUtilityMedium,1.25rem)) !important;
+}
+.THIS .chkboxWithInput{
+    width: 50px !important;
+}
+.THIS .margin_top_chkinput{
+    margin-top: -21px !important;
+}
+.THIS .chkboxLableInput{
+    padding-left: 5px !Important;
+}
+.THIS .div_section2.edit-deal-details .slds-form-element {
+    margin-bottom:25px;
+}
+.THIS .div_section2.edit-deal-details .slds-form-element.commission-dis{
+       margin-bottom: 0px;
+}
+.THIS .div_section2.edit-deal-details .chkboxWithInput.slds-form-element{
+       margin-bottom: 0px;
+}
+.THIS .slds-size_1-of-1.margin_top_chkinput.slds-form-element.TaxablePortion {
+        padding-left: 33%;
+        margin-bottom: 13px;
+    min-height: 20px;
+}
+.THIS .TaxablePortion-div {
+        width: 100%;
+    margin-top: 6px;
+        margin-bottom: 20px;
+}
+.THIS .TaxablePortion-div .slds-checkbox__label.taxableInput {
+        padding-left: 3px;
+}
+
+
+.THIS span.input-group-btn {
+    display: block;
+  width: 155px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+    
+}
+.THIS .TaxablePortion-value {
+        padding-left: 9%;
+}
+.THIS .edit-deal-details .slds-form-element.editBottomBdr {
+        border-bottom: 0px !important;
+        margin-bottom: 8px;
+}

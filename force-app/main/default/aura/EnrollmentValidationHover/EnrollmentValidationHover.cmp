@@ -1,0 +1,23 @@
+<aura:component controller="HomesubmitEnrollment" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
+                access="global" >
+    <aura:attribute name="warnMessage" type="String"/>
+    <aura:attribute name="contractSignDate" type="Date"/>
+    <aura:attribute name="lineItemMarketRateCode" type="String"/>
+    <aura:attribute name="isNationalGridandNullMarketRate" type="boolean"/>
+    <div class="slds-border_top">
+        <aura:if isTrue = "{!v.isNationalGridandNullMarketRate == true}">
+            MarketRateCode is Empty.
+        </aura:if>
+    </div>
+    <div class="slds-border_top">
+        <aura:if isTrue="{!v.contractSignDate==null}">
+            Contract Sign Date is Missing.
+        </aura:if> 
+    </div>
+    
+    <div class="slds-border_top slds-border_bottom">
+        <aura:if isTrue="{!not(empty(v.warnMessage))}">
+            {!v.warnMessage}
+        </aura:if>
+    </div>
+</aura:component>

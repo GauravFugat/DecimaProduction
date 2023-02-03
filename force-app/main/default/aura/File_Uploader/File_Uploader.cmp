@@ -1,0 +1,64 @@
+<!-- 
+/***************************************************************************************************************************
+* Name:        File_Uploader 
+* Description: File_Uploader Component on Pricing Request.
+* 
+* Version History
+* Date             Developer               Comments
+* ************   *******************   ************************************************************************************
+* 2019-11-05       Aress Dev           Component to upload Pricing Output CSV file.  
+****************************************************************************************************************************/-->
+
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="file_upload_handler">
+    
+    <aura:attribute name="accept" type="List" default="['.csv']"/>
+    <aura:attribute name="recordId" type="Id" access="public" />
+    <ltng:require styles="{!$Resource.mulitiline}" />
+    
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <aura:attribute name="errorMessage" type="String"  />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="chkboxvalue" type="Boolean" default="true" />
+    <aura:attribute name="chkboxvalueFile" type="Boolean" default="false" />
+    <!--<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>-->
+    <lightning:card > 
+        <div> 
+             <span >
+                <lightning:icon class="icon-container" iconName="doctype:csv" />
+            </span>
+            <span class=" slds-text-heading_small" > Upload Prices </span>
+            <span style="float: right;padding-right: 1.5rem;">
+                <lightning:input type="toggle" name="toggleButton" aura:id="tglbtn" label="Align Start Dates" 
+                                 messageToggleActive="ON" messageToggleInactive="OFF"  
+                                 onchange="{!c.getToggleButtonValue}" checked="true"/>
+            </span>
+            <span style="float: right;padding-right: 1.5rem;">
+                <lightning:input type="toggle" name="toggleButtonFile" aura:id="tglbtnFile" label="Large File" 
+                                 messageToggleActive="ON" messageToggleInactive="OFF"  
+                                 onchange="{!c.getToggleButtonValueFile}" checked="false"/>
+            </span>
+        </div>
+       
+       <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner />
+        </aura:if>
+        
+        <aura:if isTrue="{!v.chkboxvalueFile}">
+            <div>
+                <lightning:fileUpload
+                    name="fileUploader"
+                    accept="{!v.filetype}"
+                    recordId="{!v.recordId}"
+                    onuploadfinished="{!c.handleUpload}" />
+            </div>
+            
+			<aura:set attribute="else">
+            	 <div class="">
+                    <lightning:input type="file" name="hello" class="file  .slds-file-selector__body" aura:id="file" onchange="{!c.handleFilesChange}"  accept=".csv"/>
+                    <p class="slds-align_absolute-left clr">{!v.errorMessage}</p>
+                </div>
+        
+            </aura:set>
+        </aura:if>
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,36 @@
+<!-- 
+/***************************************************************************************************************************
+* Name:        UAC_Uploader 
+* Description: UAC_Uploader Component on Contract.
+* 
+* Version History
+* Date             Developer               Comments
+* ************   *******************   ************************************************************************************
+* 2021-04-26       Saurabh Chauhan         Component to upload Utility Account Contracts CSV file.  
+****************************************************************************************************************************/-->
+
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="contractTermination">
+    <aura:attribute name="accept" type="List" default="['.csv']"/>
+    <aura:attribute name="recordId" type="Id" access="public" />
+    <aura:attribute name="multiple" type="Boolean" default="true"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <aura:attribute name="errorMessage" type="String"  />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <lightning:card >
+        <div style="text-align: center;">
+            <span >
+                <lightning:icon class='icon-container' iconName="doctype:csv" />
+            </span>
+            <span class=" slds-text-heading_small" > Upload Utility Account Contracts</span>
+        </div>
+        <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner />
+        </aura:if>
+        <div style="text-align: center;"> 
+            <lightning:input type="file" class="file  .slds-file-selector__body" aura:id="file" 
+                             onchange="{!c.handleFilesChange}"  accept=".csv"/>
+            <p class="slds-align_absolute-left clr">{!v.errorMessage}</p>
+        </div>
+    </lightning:card>
+</aura:component>

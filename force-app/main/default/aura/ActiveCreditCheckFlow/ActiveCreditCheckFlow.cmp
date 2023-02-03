@@ -1,0 +1,65 @@
+<aura:component controller="ActiveCCFlowController" implements="lightning:availableForFlowScreens" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <lightning:spinner aura:id="Spinner" alternativeText="Loading" size="medium" variant="brand" class="slds-hide spinner" />
+
+    <aura:attribute name="CCRecID" type="String" access="global" />
+    <aura:attribute name="utilityPremiums" type="List" access="global" />
+    <aura:attribute name="ccRecord" type="Object"/>
+    <aura:attribute name="recordLoadError" type="String"/>
+    
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.CCRecID}"
+                      fields="Credit_Check_Outcome__c, Credit_Premium_Applied__c"
+                      targetFields="{!v.ccRecord}"
+                      targetError="{!v.recordLoadError}"
+    />
+    
+        <div class="slds-page-header" style="margin: -12px;margin-bottom: 0px;" role="banner">
+            <span style="display:inline-block; ">
+                <span class=" slds-text-heading_x-small" > <lightning:icon iconName="custom:custom17" size="small"/>
+                    &nbsp;<b>Active Credit Check</b>
+                </span>
+            </span>
+        </div>
+        <lightning:recordViewForm recordId="{!v.CCRecID}" objectApiName="Credit_Check__c">
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning:outputField fieldName="Credit_Check_Outcome__c" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning:outputField fieldName="Credit_Rank_Formula__c" />
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_2-of-2">
+                        <lightning:outputField fieldName="Credit_Insurer_Details__c" />
+                    </div>
+                </div>
+                <div class="slds-grid">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning:outputField fieldName="Total_Risk_Amount__c" />
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning:outputField fieldName="Total_Risk_Volume__c" />
+                    </div>
+                </div>
+    </lightning:recordViewForm>
+                <br/>
+    <aura:if isTrue="{!and(not(equals(v.ccRecord.Credit_Check_Outcome__c, 'Failed')), v.ccRecord.Credit_Premium_Applied__c == true)}">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-2">
+                <b>Credit Premium:</b> 
+                <br/>
+                <table class="slds-table_bordered">
+                    <aura:iteration items="{!v.utilityPremiums}" var="up" indexVar="key">
+                        <tr>
+                            <td >{!up.key}</td>
+                            <td><lightning:formattedNumber style="currency" maximumFractionDigits = "5" minimumFractionDigits = "5" value = "{!up.value}" /></td>
+                        </tr>
+                    </aura:iteration>
+                </table>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

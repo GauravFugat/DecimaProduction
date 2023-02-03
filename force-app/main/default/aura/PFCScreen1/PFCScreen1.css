@@ -1,0 +1,119 @@
+.THIS .slds-m-right--small{
+     width:346px !important;
+}
+
+.THIS .abc svg{
+    fill:black;
+    margin-bottom:3px;
+    cursor:pointer;
+}
+
+.THIS .abcd:hover svg{
+    fill:black;
+    cursor:pointer;
+}
+
+.THIS .bl svg{
+    cursor:pointer;
+    
+}
+
+.THIS .colgreen svg{
+    fill:green;
+    cursor:pointer;
+}
+
+.THIS .changeMe{
+    color:blue;
+}
+.THIS .fillColorWarning svg{
+    fill:#ea9022;
+}
+
+.THIS .slds-card slds-p-around--small.cDealSummary1{
+    padding-top: 0px !important;
+    margin-top: 0px !important;
+    top: 0px !important;
+}
+
+.THIS .slds-card slds-p-around--small.cOpportunityFieldEdit{
+    padding-bottom: 0px !important;
+}
+
+.THIS .cAccountFieldEdit {
+    width:100% !Important;
+}
+.THIS .cAccountFieldEdit .slds-form-element__label {
+    padding-top: 0 !Important;
+}
+.THIS fieldset .slds-form-element__row .slds-form-element.slds-show.slds-size_4-of-6 {
+    width:50%!important;
+}
+.THIS fieldset .slds-form-element__row .slds-form-element.slds-show.slds-size_2-of-6 {
+    width:50%!important;
+}
+.THIS .cAccountFieldEdit .slds-form-element__control.slds-input-has-icon.slds-input-has-icon_right {
+    min-height: 16px !important;
+    
+        padding-left: 43%!important;
+}
+ 
+.THIS .c-container .cAccountFieldEdit .div_section1 {
+        float: left  !important;
+}
+.THIS .c-container .cAccountFieldEdit .div_section2 {
+        float: left  !important;
+}
+.THIS  .cAccountFieldEdit .clearfix {
+        clear: both;
+}
+.THIS .cAccountFieldEdit .slds-form-element.control {
+    padding-left: 35% !important;
+}
+.THIS .cAccountFieldEdit label.slds-form-element__label.label_text.Commissiontype-label {
+        padding-top: 6px !important;
+    
+}
+.THIS .contactemail span{
+        white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 160px;
+    display: inline-block;
+}
+.THIS .cAccountFieldEdit .div_section3 .slds-form-element__label.label_text {
+    max-width: calc(51% - var(--lwc-squareIconUtilityMedium,1.25rem))!important;
+    flex-basis: calc(51% - var(--lwc-squareIconUtilityMedium,1.25rem))!important;
+}
+.THIS .commission-dis {
+     padding-left: 15% !important;   
+}
+.THIS .address-read span {
+        margin-right: 8px;
+    display: inline-block;
+}
+
+
+.THIS .section-title .div_section1 {
+        display: flex;
+    align-items: center;
+    /*justify-content: center;*/
+}
+
+/* Product Name Dot CSS
+.THIS .edit-deal-details .slds-form-element__control.slds-input-has-icon.slds-input-has-icon_right.productname { 
+   white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 230px;
+    display: list-item;
+
+    padding-left: 16% !important;
+    
+}*/
+.THIS .div_section1.edit-deal-details .billing_edit .slds-form-element__row {
+        margin-bottom: 8px;
+}
+.THIS .div_section2.edit-deal-details .slds-form-element.Commissiontype-input {
+   margin-bottom: 12px;
+}

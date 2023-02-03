@@ -1,0 +1,50 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
+                access="global" 
+                controller="getUtilityAccounts">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="prisingReqId" type="String" />
+    <aura:attribute name="spinner" type="boolean" default = "true"/>
+    
+    <!-- attributes -->
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    
+    <div>
+        <aura:if isTrue="{!v.spinner}">
+                    <div aura:id="spinnerId" class="slds-spinner_container" style="height: fit-content;">
+                        <div class="slds-spinner--brand  slds-spinner slds-spinner--small slds-is-relative" role="alert">
+                            <span class="slds-assistive-text">Loading...</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </aura:if>
+        <table style="{!if(v.spinner,'display:none !important','')}">
+            <tr>
+                
+                <th style="background-color:#F5F5F5">
+                    <b>Utilities</b> 
+                </th>
+                <th style="background-color:#F5F5F5">
+                    <b>Start Date</b>
+                </th>
+                <th style="background-color:#F5F5F5">
+                    <b>Count</b>
+                </th>
+            </tr>
+            <aura:iteration items="{!v.columns}" var="obj" indexVar="index">
+                
+                <tr>
+                    
+                    <td>{!obj.Name}</td>                   
+                    <td>{!obj.Start_Date__c}</td>
+                    <td>{!obj.expr0}</td>
+                    
+                </tr>     
+                
+            </aura:iteration>
+        </table>
+        
+    </div>
+    
+</aura:component>

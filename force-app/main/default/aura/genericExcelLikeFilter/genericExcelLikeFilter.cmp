@@ -1,0 +1,126 @@
+<aura:component controller="Create_Opportunity" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,lightning:isUrlAddressable" access="global" >
+    <aura:attribute name="PaginationList" type="list"/>
+    <aura:attribute name="GenericList" type="list"/>
+    <aura:attribute name="Pagination" type="list"/>
+    <aura:attribute name="SelectedColumn" type="String"/>
+    <aura:attribute name="utilityStatusList" type="list"/>
+    <aura:attribute name="selectedValues" type="list"/>
+    <aura:attribute name="previousValues" type="list"/>
+    <aura:attribute name="openFilterModal" type="boolean" default = "true"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="isSelectAllModalStatus" type="Boolean" default="true"/>
+    <aura:attribute name="FilteredutilityStatusList" type="list" />
+    <aura:attribute name="isSelectAll" type="Boolean" default="false"/> 
+    
+    <aura:registerEvent name="compEvent" type="c:SelectedValueFilter"/>
+   
+    
+    <aura:if isTrue="{!v.openFilterModal}">
+        
+        <!-- Filter Modal -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container" style="width:fit-content !important;max-width: none !important;">
+                <!-- ###### MODAL BOX HEADER Start ######-->
+                <header class="slds-modal__header" style="border-top-left-radius: 12px;border-top-right-radius: 12px;background-color:#F5F5F5;padding-top:3px;padding-bottom:3px;font-size:18px;">
+                    <!--lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/-->
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Filter </h2>
+                    
+                </header>
+                <!--###### MODAL BOX BODY Part Start######-->
+                <div class="slds-modal__content " id="modal-content-id-1">
+                    <div style="padding-left:25px;padding-right:15px;">
+                        
+                        <table class="" style="display: inherit;">
+                            <aura:if isTrue="{!v.spinner}">
+                                <div aura:id="spinnerId" class="slds-spinner_container" style="margin-top:35.33%;margin-bottom:33.33%">
+                                    <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                                        <span class="slds-assistive-text">Loading...</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </aura:if>
+                            <thead>
+                                <tr >
+                                    <!--header checkbox for select all-->
+                                    <th style="width:3.25rem;" class="slds-text-align_right">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <label class="slds-checkbox">
+                                                    <ui:inputCheckbox value="{!v.isSelectAllModalStatus}"
+                                                                      change="{!c.SelectAllStatusUtilities}"
+                                                                      aura:id="selectAllModal"/>
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th  style = "color:#1B5297;" scope="row">Select All</th>
+                                    <!--th  class="slds-is-sortable" scope="col" onclick="{!c.sortByAUName}">
+                                        <a href="javascript:void(0);" class="slds-text-linkreset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate slds-text-align_center" title="Utility">
+                                                Utility
+                                            </span>  
+                                            <aura:if isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'Utility') }">&nbsp;  &#9660; </aura:if>  
+                                            <aura:if isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'Utility') }"> &nbsp;  &#9650; </aura:if>                        
+                                        </a>
+                                    </th-->
+                                </tr>
+                                
+                            </thead>
+                            <tbody style="display: inherit;">
+                                <aura:iteration items="{!v.selectedValues}" var="obj">
+                                   <!-- <aura:iteration items="{!v.SelectedColumn}" var="sc">-->
+                                        <tr>
+                                            <td scope="row" class="slds-text-align_right" style="width:3.25rem;">
+                                                <div class="slds-form-element">
+                                                    <div class="slds-form-element__control slds-wrap">
+                                                        <label class="slds-checkbox">
+                                                            <ui:inputCheckbox 
+                                                                              aura:id="selectAllModal"
+                                                                              value="{!obj.isSelected}"
+                                                                              errors="{!obj.objUAE.Status__c}"
+                                                                              change="{! c.handleDeSelectedStatus}"/>
+                                                            
+                                                            <span class="slds-checkbox_faux"></span>
+                                                            <span class="slds-form-element__label text"></span>
+                                                        </label>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td  style = "" scope="row">
+                                                <div class="slds-truncate" style="white-space: pre-wrap;">
+                                                    
+                                                    <!--a href="{!'/one/one.app?#/sObject/'+ obj.UtilityName + '/view'}" target="_blank"--> {!obj.label}<!--/a-->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                   <!-- </aura:iteration>-->
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--###### MODAL BOX FOOTER Part Start ######-->
+                <footer class="slds-modal__footer" style="background-color:#F5F5F5;padding-top:3px;padding-bottom:3px;">
+                    <lightning:button variant="neutral" 
+                                      label="Cancel"
+                                      title="Cancel"
+                                      onclick="{! c.closeModel }"/>
+                    <lightning:button variant="brand" 
+                                      label="Apply"
+                                      onclick="{! c.ApplyFilter  }"/>
+                </footer>
+            </div>
+        </section>
+        <!--div class="slds-backdrop slds-backdrop_open"></div-->
+        <!-- Filter Modal Ends-->
+    </aura:if>
+</aura:component>

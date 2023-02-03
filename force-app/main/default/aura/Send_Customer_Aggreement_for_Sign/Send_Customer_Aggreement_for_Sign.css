@@ -1,0 +1,34 @@
+.THIS .abc svg{
+    fill:black;
+    margin-bottom:3px;
+    cursor:pointer;
+}
+
+.THIS .abcd:hover svg{
+    fill:black;
+    cursor:pointer;
+}
+
+.THIS .bl svg{
+    cursor:pointer;
+    
+}
+
+.THIS .colgreen svg{
+    fill:green;
+    cursor:pointer;
+}
+
+.THIS .changeMe{
+    color:blue;
+}
+
+.THIS .fillColorWarning svg{
+    fill:#ea9022;
+}
+
+.THIS .section-title .div_section1 {
+        display: flex;
+    align-items: center;
+    justify-content: center;
+}
